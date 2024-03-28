@@ -20,7 +20,9 @@ const LevelEditor = () => {
   
   const [nodeInfo, setNodeInfo] = useState([-1,-1])
   const [screenInfo, setScreenInfo] = useState([-1,-1])
-  const [brush, setBrush] = useState("block")
+  const [brush, setBrush] = useState("walk")
+  const [camZone, setCamZone] = useState([])
+  const [otherCamZones, setOtherCamZones] = useState([])
 
   const backgroundRef = useRef()
   const backgroundImg = `url(./levels/${level}${zone}.png)`
@@ -92,11 +94,8 @@ const LevelEditor = () => {
     setGrid(tempGrid)
 
     // Name
-    const levelName = levelData?.[level]?.name ? levelData?.[level]?.name : ''
+    const levelName = lvl.name ? lvl.name : ''
     setName(levelName)
-
-    // Camera
-    loadCamera()
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [level, levelData])
@@ -104,12 +103,26 @@ const LevelEditor = () => {
   // Load zone
   useEffect(()=>{
     loadCamera()
+
+    const lvl = levelData[level]
+
+    // Camera zone
+    const camZones = lvl.zones[zone]?.zoneSquares ? lvl.zones[zone].zoneSquares : []
+    setCamZone(camZones)
+
+    // Other cam zones
+    const allCamZones = lvl.zones? lvl.zones : []
+    let concatenatedCamZones = allCamZones
+      .filter((_, index) => index !== zone)
+      .reduce((acc, obj) => acc.concat(obj.zoneSquares), [])
+    setOtherCamZones(concatenatedCamZones)
+
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [zone])
+  }, [level, levelData, zone])
 
   const changeBrushMode = () => {
-    if (brush == "walk") setBrush("block")
-    else if (brush == "block") setBrush("walk")
+    if (brush == "walk") setBrush("zone")
+    else if (brush == "zone") setBrush("walk")
   }
 
   const updateGrid = () => {
@@ -131,18 +144,23 @@ const LevelEditor = () => {
   }
 
   const logLevel = () => {
+    const lvl = levelData[level]
+    const zones = lvl.zones ? lvl.zones : []
+
     const loggedLevel = {
       name: name,
       grid: {
         size: gridSize,
         walkable: getWalkableArray()
       },
-      zones: [
-        {
-          camera: camObject
-        }
-      ]
+      zones: zones
     }
+
+    const thisZone = {
+      camera: camObject,
+      zoneSquares: camZone
+    }
+    loggedLevel.zones[zone] = thisZone
 
     console.log(loggedLevel)
   }
@@ -167,7 +185,18 @@ const LevelEditor = () => {
           <directionalLight position={[0,1,0]} castShadow/>
           <LevelCamera camObject={camObject} />
 
-          { grid && <GridHelper grid={grid} gridScale={gridScale} setGrid={setGrid} setNodeInfo={setNodeInfo} brush={brush} /> }
+          { grid && 
+            <GridHelper 
+              grid={grid} 
+              gridScale={gridScale} 
+              setGrid={setGrid} 
+              setNodeInfo={setNodeInfo} 
+              brush={brush}
+              camZone={camZone}
+              setCamZone={setCamZone}
+              otherCamZones={otherCamZones}
+            />
+          }
 
           <Box position={boxPos} scale={[0.25,1,0.25]} visible={boxVisible} />
         </Canvas>
@@ -179,7 +208,7 @@ const LevelEditor = () => {
               <option key={key} value={key}>{key}</option>
             ))}
           </select>
-          <select onChange={(e) => setZone(e.target.value)}>
+          <select onChange={(e) => setZone(parseInt(e.target.value))}>
             {levelData[level].zones.map((zone, index) => (
               <option key={"zone"+index} value={index}>{index}</option>
             ))}

@@ -4,13 +4,14 @@
 import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three'
 
-const GridHelper = ({ grid, gridScale, setGrid, setNodeInfo, brush }) => {
+const GridHelper = ({ grid, gridScale, setGrid, setNodeInfo, brush, camZone, setCamZone, otherCamZones }) => {
   const gridX = grid.width
   const gridZ = grid.height
   const temp = new THREE.Object3D()
   const instancedMeshRef = useRef()
 
   const [drawMode, setDrawMode] = useState(false)
+  const [mouseButton, setMouseButton] = useState(0)
 
   useEffect(() => {
     if (!grid) return
@@ -36,6 +37,16 @@ const GridHelper = ({ grid, gridScale, setGrid, setNodeInfo, brush }) => {
         instancedMeshRef.current.setColorAt(index, color)
       }
     }
+
+    // Set cam zone colors
+    camZone.forEach(cz => {
+      instancedMeshRef.current.setColorAt(cz, new THREE.Color('#0000AA'))
+    })
+    // Set other cam zone colors
+    otherCamZones.forEach(cz => {
+      instancedMeshRef.current.setColorAt(cz, new THREE.Color('#770077'))
+    })
+
     // Update the instance
     instancedMeshRef.current.instanceMatrix.needsUpdate = true
     instancedMeshRef.current.instanceColor.needsUpdate = true
@@ -43,7 +54,11 @@ const GridHelper = ({ grid, gridScale, setGrid, setNodeInfo, brush }) => {
     instancedMeshRef.current.material.transparent = true;
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [grid])
+  }, [grid, camZone])
+
+  const gridToIndex = (grid) => {
+    return grid[0] * gridZ + grid[1]
+  }
 
   const handleMouseDraw = (e) => {
     const pointX = e.point.x
@@ -59,19 +74,37 @@ const GridHelper = ({ grid, gridScale, setGrid, setNodeInfo, brush }) => {
     const tempGrid = {...grid}
     const node = tempGrid.nodes[gridZ][gridX]
     if (brush == "walk") {
-      if (node.walkable == false) {
+      if (mouseButton == 0 && node.walkable == false) {
         node.walkable = true
         setGrid(tempGrid)
-      }
-    } else if (brush == "block") {
-      if (node.walkable == true) {
+      } else if (mouseButton == 2 && node.walkable == true) {
         node.walkable = false
         setGrid(tempGrid)
+      }
+    } else if (brush == "zone") {
+      const index = gridToIndex([gridX, gridZ])
+      const tempCamZone = [...camZone]
+
+      if (mouseButton == 0) {
+        if (tempCamZone.includes(index)) return
+        tempCamZone.push(index)
+        setCamZone(tempCamZone)
+      } else if (mouseButton == 2) {
+        if (tempCamZone.includes(index)) {
+          const cleanArray = tempCamZone.filter(item => item !== index)
+          setCamZone(cleanArray) 
+        }
       }
     }
   }
 
-  const handleMouseDown = () => {
+  const handleMouseDown = (e) => {
+    if (e.button === 0) {
+      setMouseButton(0)
+    }
+    else if (e.button === 2) {
+      setMouseButton(2)
+    }
     setDrawMode(true);
   };
 
@@ -80,10 +113,16 @@ const GridHelper = ({ grid, gridScale, setGrid, setNodeInfo, brush }) => {
   };
 
   useEffect(() => {
-    document.addEventListener('mouseup', handleMouseUp);
+    const preventContextMenu = (e) => {
+      e.preventDefault()
+    }
+
+    document.addEventListener('mouseup', handleMouseUp)
+    document.addEventListener('contextmenu', preventContextMenu)
 
     return () => {
-      document.removeEventListener('mouseup', handleMouseUp);
+      document.removeEventListener('mouseup', handleMouseUp)
+      document.removeEventListener('contextmenu', preventContextMenu)
     };
   }, []);
   
