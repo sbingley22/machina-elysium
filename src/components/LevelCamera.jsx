@@ -1,5 +1,4 @@
 /* eslint-disable react/prop-types */
-import { Box, OrbitControls } from "@react-three/drei"
 import { useThree } from "@react-three/fiber"
 import { useEffect } from "react"
 
@@ -17,8 +16,6 @@ const LevelCamera = ({ camObject }) => {
 
   return (
     <>
-      {/* <OrbitControls /> */}
-      <Box position={[4,0,-2]} />
     </>
   )
 }

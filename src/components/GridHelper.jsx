@@ -39,10 +39,9 @@ const GridHelper = ({ grid, gridScale, setGrid, setNodeInfo, brush }) => {
     // Update the instance
     instancedMeshRef.current.instanceMatrix.needsUpdate = true
     instancedMeshRef.current.instanceColor.needsUpdate = true
-    instancedMeshRef.current.material.opacity = 0.5;
+    instancedMeshRef.current.material.opacity = 0.3;
     instancedMeshRef.current.material.transparent = true;
-    //console.log(instancedMeshRef.current)
-    //console.log(grid)
+
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [grid])
 
@@ -51,8 +50,8 @@ const GridHelper = ({ grid, gridScale, setGrid, setNodeInfo, brush }) => {
     const pointZ = e.point.z
     
     // convert point to grid index then update grid
-    const gridX = Math.round( (pointX / gridScale) + grid.width/2 )
-    const gridZ = Math.round( (pointZ / gridScale) + grid.height/2 )
+    const gridX = Math.round( (pointX / gridScale) - gridScale )
+    const gridZ = Math.round( (pointZ / gridScale) + gridScale ) * -1
     setNodeInfo([gridX,gridZ])
     
     if (!drawMode) return

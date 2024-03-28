@@ -5,7 +5,7 @@ import Game from './components/Game'
 import LevelEditor from './components/LevelEditor'
 
 function App() {
-  const [mode, setMode] = useState(0)
+  const [mode, setMode] = useState(1)
 
   const style = {
     backgroundImage: mode == 0 ? `url(./titleShot.png)` : '',

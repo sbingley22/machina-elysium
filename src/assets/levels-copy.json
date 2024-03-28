@@ -1,0 +1,26 @@
+{
+  "a": {
+    "name": "pod room",
+    "grid": {
+      "size": [20,20],
+      "walkable": []
+    },
+    "zones": [
+      {
+        "camera": {
+        }
+      }
+    ]
+  },
+  "b": {
+    "name": "pod room exit",
+    "grid": {
+      "size": [31,31],
+      "walkable": []
+    },
+    "zones": [
+      {},
+      {}
+    ]
+  }
+}
