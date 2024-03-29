@@ -137,6 +137,7 @@
             "doors": [
                 {
                     "destination": "a",
+                    "zone": 0,
                     "x": 2,
                     "z": 15,
                     "sx1": -999,
@@ -147,6 +148,7 @@
                 },
                 {
                     "destination": "b",
+                    "zone": 0,
                     "x": 17,
                     "z": 11,
                     "sx1": 960,
@@ -154,6 +156,32 @@
                     "sx2": 1100,
                     "sy2": 800,
                     "key": false
+                }
+            ],
+            "items": [
+                {
+                    "name": "b",
+                    "type": "key",
+                    "x": 0,
+                    "z": 4,
+                    "sx": 100,
+                    "sy": 420,
+                    "radius": 15,
+                    "collected": false,
+                    "image": "key.png",
+                    "scale": 1
+                },
+                {
+                    "name": "med gel",
+                    "type": "healing",
+                    "x": 10,
+                    "z": 1,
+                    "sx": 235,
+                    "sy": 750,
+                    "radius": 15,
+                    "collected": false,
+                    "image": "medgel.png",
+                    "scale": 1
                 }
             ]
         }
@@ -299,6 +327,13 @@
             836
         ]
     },
+    "enemies": [
+        {
+            "x": 18,
+            "z": 2,
+            "type": "doll"
+        }
+    ],
     "zones": [
         {
             "zoneSquares": [
@@ -316,6 +351,7 @@
             "doors": [
                 {
                     "destination": "a",
+                    "zone": 0,
                     "x": 30,
                     "z": 19,
                     "sx1": 240,

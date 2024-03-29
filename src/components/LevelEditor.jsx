@@ -178,6 +178,12 @@ const LevelEditor = () => {
           style={{ backgroundImage: backgroundImg}}
           ref={backgroundRef}
         />
+
+        { levelData[level]?.zones[zone]?.items && levelData[level].zones[zone].items.map( (item, index) => (
+          !item.collected && <img key={item.name + index} src={"./items/" + item.image} className="item" style={{top: item.sy - 28 + "px", left: item.sx -28 + "px"}} />
+        ))
+        }
+
         <Canvas
           style={{width: "100%", height: "100%"}}
         >
@@ -199,8 +205,11 @@ const LevelEditor = () => {
           }
 
           <Box position={boxPos} scale={[0.25,1,0.25]} visible={boxVisible} />
+        
         </Canvas>
+
       </div>
+
       <div style={{textAlign: "left", padding: "15px"}}>
         <div>
           <select onChange={(e) => setLevel(e.target.value)}>

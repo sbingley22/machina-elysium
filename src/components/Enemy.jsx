@@ -10,16 +10,14 @@ import { useSkinnedMeshClone } from './SkinnedMeshClone'
 const vec3Pos = new THREE.Vector3()
 const vec3Dir = new THREE.Vector3()
 
-const Player = ({ playerPos, playerDestination, setReachedDestination, grid, gridScale, gridToWorld, worldToGrid, findPath, rmb, setTakeShot, setShotCharge, setPlayAudio }) => {
+const Enemy = ({ id, type, initialPos, grid, gridScale, gridToWorld, worldToGrid, findPath, pointerOverEnemy, setPlayAudio }) => {
   const group = useRef()
   const { scene, nodes, animations } = useSkinnedMeshClone(modelGlb)
-  // eslint-disable-next-line no-unused-vars
-  const { actions, names, mixer } = useAnimations(animations, scene) // scene must be added to useAnimations()
-  //console.log(nodes)
+  const { actions, mixer } = useAnimations(animations, scene) // scene must be added to useAnimations()
 
   // Initialise nodes
   useEffect(() => {
-    console.log(nodes, names)
+    //console.log(nodes, names)
 
     let nodeArray = ["Eve", "EveGen"]
     nodeArray.forEach(node => {
@@ -27,17 +25,18 @@ const Player = ({ playerPos, playerDestination, setReachedDestination, grid, gri
     })
 
     let node = "EveGen"
-    //node = "Eve"
+    node = "Eve"
     if (nodes[node]) nodes[node].visible = false
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [nodes])
 
+  const playerRef = useRef(null)
   const currentAnimation = useRef("Idle")
   const nextAnimation = useRef("Idle")
   const [ path, setPath ] = useState([])
-  const action = useRef(null)
-  const actionTimer = useRef(0)
+  const [ dead, setDead ] = useState(false)
+  const frameCount = useRef(0)
 
   const updateAnimation = () => {
     if (!actions) return
@@ -53,18 +52,11 @@ const Player = ({ playerPos, playerDestination, setReachedDestination, grid, gri
     //console.log(currentAnimation.current)
   }
 
-  const rotateTo = (targetPosition) => {
-    vec3Dir.subVectors(targetPosition, group.current.position).normalize()
-    const targetRotation = Math.atan2(vec3Dir.x, vec3Dir.z)
-    group.current.rotation.y = targetRotation
-  }
-
   const move = (delta) => {
-    if (rmb) return
-
+    if (currentAnimation.current == "Claw") return
+    if (currentAnimation.current == "Take Damage") return
     if (path.length == 1) {
-      if (currentAnimation.current == "Jogging") nextAnimation.current = "Idle"
-      setReachedDestination(path[0])
+      if (currentAnimation.current == "Staggering") nextAnimation.current = "Staggering"
       const newPath = [...path.slice(1)]
       setPath(newPath)
       return
@@ -73,9 +65,7 @@ const Player = ({ playerPos, playerDestination, setReachedDestination, grid, gri
       return
     }
 
-    //console.log(path)
-
-    if (currentAnimation.current !== "Jogging") nextAnimation.current = "Jogging"
+    if (currentAnimation.current !== "Staggering") nextAnimation.current = "Staggering"
 
     const worldNode = gridToWorld([path[0][0], path[0][1]], gridScale)
     vec3Pos.set(worldNode[0],0,worldNode[1])
@@ -84,15 +74,13 @@ const Player = ({ playerPos, playerDestination, setReachedDestination, grid, gri
     //console.log(position)
 
     if (distance < 0.1) {
-      if (path.length < 2) setReachedDestination(path[0])
       const newPath = [...path.slice(1)]
       setPath(newPath)
-      //console.log("slicing path")
       return
     }
 
     // Update position
-    const speed = 3.5 * delta
+    const speed = 0.8 * delta
     vec3Dir.subVectors(vec3Pos, position).normalize()
     position.addScaledVector(vec3Dir, speed)
     //console.log(vec3Dir)
@@ -118,77 +106,54 @@ const Player = ({ playerPos, playerDestination, setReachedDestination, grid, gri
     group.current.rotation.y = newRotation;
   }
 
-  const updateActions = (delta) => {
-    if (rmb) {
-      //console.log("right mouse held")
-      if (path.length > 0) setPath([])
-      
-      if (action.current === "PalmShoot") {
-        actionTimer.current += delta * 1.4
-        const timerFloor = Math.floor(actionTimer.current)
-        setShotCharge(prev => {
-          if (timerFloor === prev) return prev
-          return timerFloor
-        })
-
-        // Rotate to face enemy
-        if (group.current.rotationFlag) {
-          //console.log("Rotate to", group.current.rotationFlag)
-          rotateTo(group.current.rotationFlag)
-          group.current.rotationFlag = null
-        }
-      }
-      else {
-        action.current = "PalmShoot"
-        nextAnimation.current = "PalmShoot"
-        //console.log(nextAnimation.current)
-      }
-    } else {
-      if (action.current === "PalmShoot") {
-        // take photo
-        setTakeShot(actionTimer.current)
-        action.current = null
-        actionTimer.current = 0
-        nextAnimation.current = "Idle"
-      }
+  const updateActions = () => {
+    const health = group.current.health
+    if (health <= 0) {
+      setDead(true)
     }
 
-    // Action flags
+    // Attack player?
+    const distance = playerRef.current.position.distanceTo(group.current.position)
+    if (distance < 1.5 && currentAnimation.current != "Claw") {
+      //console.log(distance)
+      group.current.actionFlag = "Claw"
+      playerRef.current.actionFlag = "Take Damage"
+    }
+
+    // Random growl
+    if (Math.random() < 1/200) setPlayAudio("DroneGrowl")
+
+    // Sort action flags
     const actionFlag = group.current.actionFlag
+    if (actionFlag == "") return
     //console.log(actionFlag)
 
-    if (actionFlag === "Take Damage") {
-      if (currentAnimation.current === "Take Damage") return
+    if (actionFlag == "Take Damage") {
       nextAnimation.current = "Take Damage"
-      actionTimer.current = 0
-      setShotCharge(0)
-      group.current.actionFlag = null
-
-      // Reduce health
-
-
-      setPlayAudio("PlayerHurt")
+      group.current.actionFlag = ""
+    }
+    else if (actionFlag == "Claw") {
+      nextAnimation.current = "Claw"
+      group.current.actionFlag = ""
     }
   }
 
-  const updateModel = () => {
-
-  }
-
-  // Player wants to move
-  useEffect(() => {
-    if (playerDestination[0] == -1) return
+  const updatePath = () => {
+    if (!group.current) return
+    if (currentAnimation.current == "Claw") return
+    if (currentAnimation.current == "Take Damage") return
 
     const worldPos = group.current.position
     const gridPos = worldToGrid([worldPos.x, worldPos.z], gridScale)
     //console.log(worldPos, gridPos)
 
-    const newPath = findPath([gridPos[0], gridPos[1]], playerDestination, grid)
-    //console.log("Player Destination Use Effect:", newPath)
+    const playerPosVec = playerRef.current.position
+    const playerGrid = worldToGrid([playerPosVec.x, playerPosVec.z], gridScale)
+    //console.log(gridPos, playerGrid)
+    const newPath = findPath(gridPos, playerGrid, grid)
+    //console.log(newPath)
     setPath(newPath)
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [playerDestination])
+  }
 
   // Mixer functions. Listen for animation end, etc.
   useEffect(() => {
@@ -199,6 +164,7 @@ const Player = ({ playerPos, playerDestination, setReachedDestination, grid, gri
 
     // eslint-disable-next-line no-unused-vars
     mixer.addEventListener('finished', (e) => {
+      //console.log(e)
       nextAnimation.current = "Idle"
     })
 
@@ -208,27 +174,49 @@ const Player = ({ playerPos, playerDestination, setReachedDestination, grid, gri
   // eslint-disable-next-line no-unused-vars
   useFrame((state, delta) => {
     if (!scene) return
+    if (dead) return
+    if (group.current.actionFlag == "Player Dead") return
 
-    updateActions(delta)
+    // find player
+    if (!playerRef.current) {
+      // find reference to player
+      const sceneChildren = state.scene.children
+      sceneChildren.forEach((node) => {
+        if (node.name === "Player") {
+          playerRef.current = node
+          //console.log(playerRef.current)
+        }
+      })
+    }
+
+    frameCount.current += 1
+
+    updateActions()
     move(delta)
+    if (frameCount.current % 10 == 0) updatePath()
     updateAnimation()
-    updateModel()
   })
+
+  const handlePointerOver = () => {
+    pointerOverEnemy(group.current.position)
+    //console.log("Pointer over enemy")
+  }
 
   return (
     <group 
       ref={group}
-      position={[playerPos[0],0,playerPos[2]]}
+      position={initialPos}
       dispose={null}
-      name='Player'
-      actionFlag={null}
-      rotationFlag={null}
+      name={type+id}
+      health={100}
+      actionFlag={""}
+      onPointerOver={handlePointerOver}
     >
       <primitive object={scene} />
     </group>
   )
 }
 
-export default Player
+export default Enemy
 
 useGLTF.preload(modelGlb)

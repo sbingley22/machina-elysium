@@ -11,6 +11,7 @@ import levelGlb from '../assets/Levels.glb?url'
 import LevelCamera from './LevelCamera'
 import GridGame from './GridGame'
 import Player from './Player'
+import Enemy from './Enemy'
 
 const screenPosition = new THREE.Vector3()
 const worldPosition = new THREE.Vector3()
@@ -93,8 +94,8 @@ const Arena = ({
         //console.log(en.x, en.z, enemyPos)
         tempEnemies.push({
           id: index,
-          gx: enemyPos.x,
-          gz: enemyPos.z,
+          gx: enemyPos[0],
+          gz: enemyPos[1],
           type: en.type,
           health: 100
         })
@@ -217,7 +218,7 @@ const Arena = ({
       const screenPos = worldToScreen(enemy.position)
       //console.log(screenPos)
 
-      const radius = 100
+      const radius = .15
 
       if (mousePos.x < screenPos.x - radius) return
       if (mousePos.x > screenPos.x + radius) return
@@ -228,7 +229,7 @@ const Arena = ({
       hitEnemy = true
 
       enemy.health -= shotPower * 20
-      enemy.actionFlag = "hurt"
+      enemy.actionFlag = "Take Damage"
     })
 
     if (hitEnemy) {
@@ -238,7 +239,6 @@ const Arena = ({
         return "nq1"
       })
     } else setPhotoImg("nothing")
-
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[takeShot])  
@@ -250,7 +250,7 @@ const Arena = ({
       <directionalLight 
         position={[0,10,0]} 
         castShadow
-        shadow-camera-left={0} // Adjust these values
+        shadow-camera-left={0}
         shadow-camera-right={10}
         shadow-camera-top={10}
         shadow-camera-bottom={0}
@@ -273,6 +273,21 @@ const Arena = ({
         setPlayAudio={setPlayAudio}      
       />
 
+      {enemies.map( en => (
+        <Enemy
+          key={en.id}
+          id={en.id}
+          type={en.type}
+          initialPos={[en.gx,0,en.gz]}
+          grid={grid}
+          gridScale={gridScale}
+          gridToWorld={gridToWorld}
+          worldToGrid={worldToGrid}
+          findPath={findPath}
+          pointerOverEnemy={pointerOverEnemy}
+          setPlayAudio={setPlayAudio}
+        />          
+      ))}
 
       <GridGame grid={grid} gridScale={gridScale} setGridClick={setGridClick} setCurrentCursor={setCurrentCursor} />
       {/* <GridVisualiser grid={grid} gridScale={gridScale} /> */}

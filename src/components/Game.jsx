@@ -58,8 +58,8 @@ const Game = () => {
     }
 
     const isOverItem = (x,y) => {
-      const lvl = levelData[level]
-      if (!level) return null
+      const lvl = levelData[level].zones[zone]
+      if (!lvl) return null
 
       let overItem = null
       if (!lvl.items) return null
@@ -116,7 +116,7 @@ const Game = () => {
 
       const inDoor = isOverDoor(x,y)
       if (inDoor != null) {
-        const door = levelData[level].doors[inDoor]
+        const door = levelData[level].zones[zone].doors[inDoor]
         const dest = [parseInt(door.x), parseInt(door.z)]
         setPlayerDestination(dest)
         //console.log(dest, door.destination)
@@ -124,6 +124,7 @@ const Game = () => {
         action = {
           type: "door",
           destination: door.destination,
+          nextZone: door.zone,
           coord: dest,
           key: door.key,
           index: inDoor
