@@ -2,10 +2,15 @@
 /* eslint-disable react/prop-types */
 import * as THREE from 'three'
 import { useThree } from "@react-three/fiber"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import Pathfinding from 'pathfinding'
 import { useRef } from 'react'
 import GridVisualiser from './GridVisualiser'
+import { useGLTF } from '@react-three/drei'
+import levelGlb from '../assets/Levels.glb?url'
+import LevelCamera from './LevelCamera'
+import GridGame from './GridGame'
+import Player from './Player'
 
 const screenPosition = new THREE.Vector3()
 const worldPosition = new THREE.Vector3()
@@ -18,7 +23,8 @@ const Arena = ({
     levelDoor, 
     playerDestination, 
     setPlayerDestination, 
-    setReachedDestination, 
+    setReachedDestination,
+    setCurrentCursor,
     rmb, 
     takeShot, 
     setTakeShot, 
@@ -28,6 +34,8 @@ const Arena = ({
   }) => {
 
   const { scene, camera, mouse } = useThree()
+  const { nodes: levelNodes } = useGLTF(levelGlb)
+  const [camObject, setCamObject] = useState(null)
 
   const [grid, setGrid] = useState(null)
   const [gridScale, setGridScale] = useState(0.5)
@@ -36,13 +44,19 @@ const Arena = ({
   const [enemies, setEnemies] = useState([])
   const playerRef = useRef(null)
 
+  const loadCamera = () => {
+    const camKey = Object.keys(levelNodes).find(key => key.startsWith(`${level}-${zone}-Cam`))
+    const camObj = levelNodes[camKey]
+    setCamObject(camObj)
+  }
+
   // Load level
   useEffect(() => {
     if (levelData == null) return
     if (level == null) return
 
     const lvl = levelData[level]
-    //console.log(levels, level)
+    //console.log(lvl)
     
     // Create new grid
     const gridWidth = lvl.grid.size[0]
@@ -61,14 +75,10 @@ const Arena = ({
     setGrid(tempGrid)
 
     // Load camera
-    if (camera) {
-      if (lvl.zones[zone].camera) {
-        camera.copy(lvl.zones[zone].camera)
-      }
-    }
+    loadCamera()
 
     // Load player
-    const door = lvl.doors.find(door => door.destination === levelDoor)
+    const door = lvl.zones[zone].doors.find(door => door.destination === levelDoor)
     if (!door) console.log("Couldn't find door")
     const doorPos = gridToWorld([parseInt(door.x), parseInt(door.z)], gridScale)
     setPlayerPos([doorPos[0], 0, doorPos[1]])
@@ -236,15 +246,40 @@ const Arena = ({
   
   return (
     <>
-      <ambientLight intensity={0.1} />
-      <directionalLight position={[0,10,0]} castShadow/>
-      
+      <ambientLight intensity={0.3} />
+      <directionalLight 
+        position={[0,10,0]} 
+        castShadow
+        shadow-camera-left={0} // Adjust these values
+        shadow-camera-right={10}
+        shadow-camera-top={10}
+        shadow-camera-bottom={0}
+      />
+
+      <LevelCamera camObject={camObject} />
+
+      <Player 
+        playerPos={playerPos}
+        playerDestination={playerDestination}
+        setReachedDestination={setReachedDestination}
+        grid={grid}
+        gridScale={gridScale}
+        gridToWorld={gridToWorld}
+        worldToGrid={worldToGrid}
+        findPath={findPath}
+        rmb={rmb}
+        setTakeShot={setTakeShot}
+        setShotCharge={setShotCharge}
+        setPlayAudio={setPlayAudio}      
+      />
 
 
-      {/* <GridGame grid={grid} gridScale={gridScale} setGridClick={setGridClick} /> */}
-      <GridVisualiser grid={grid} gridScale={gridScale} />
+      <GridGame grid={grid} gridScale={gridScale} setGridClick={setGridClick} setCurrentCursor={setCurrentCursor} />
+      {/* <GridVisualiser grid={grid} gridScale={gridScale} /> */}
     </>
   )
 }
 
 export default Arena
+
+useGLTF.preload(levelGlb)

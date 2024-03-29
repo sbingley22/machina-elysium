@@ -8,7 +8,6 @@ import * as THREE from 'three'
 const GridVisualiser = ({ grid, gridScale }) => {
   const temp = new THREE.Object3D()
   const instancedMeshRef = useRef()  
-  //console.log(grid)
 
   useEffect(() => {
     if (!grid) return
@@ -20,7 +19,7 @@ const GridVisualiser = ({ grid, gridScale }) => {
     for (let x = 0; x < gridX; x++) {
       for (let z = 0; z < gridZ; z++) {
         const newX = x * gridScale
-        const newZ = z * gridScale
+        const newZ = -z * gridScale
         temp.position.set(newX, 0, newZ)
         temp.scale.set(gridScale * 0.95, gridScale * 0.95)
         temp.rotation.set(-Math.PI/2,0,0)
@@ -48,10 +47,7 @@ const GridVisualiser = ({ grid, gridScale }) => {
   
   return (
     <group 
-      position={[
-        (grid.width*gridScale)*-0.5, 
-        0, 
-        (grid.height*gridScale)*-0.5]}
+      position={[gridScale/2, 0, -gridScale/2]}
     >
       <instancedMesh 
         ref={instancedMeshRef} 

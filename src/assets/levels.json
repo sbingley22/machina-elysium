@@ -133,53 +133,6 @@
     },
     "zones": [
         {
-            "camera": {
-                "metadata": {
-                    "version": 4.6,
-                    "type": "Object",
-                    "generator": "Object3D.toJSON"
-                },
-                "object": {
-                    "uuid": "539b6873-da8f-460a-841d-93bb4e7e1396",
-                    "type": "PerspectiveCamera",
-                    "name": "a-0-Camera",
-                    "userData": {
-                        "name": "a-0-Camera"
-                    },
-                    "layers": 1,
-                    "matrix": [
-                        1,
-                        0,
-                        0,
-                        0,
-                        0,
-                        1,
-                        0,
-                        0,
-                        0,
-                        0,
-                        1,
-                        0,
-                        0,
-                        0,
-                        0,
-                        1
-                    ],
-                    "up": [
-                        0,
-                        1,
-                        0
-                    ],
-                    "fov": 29.343503611293446,
-                    "zoom": 1,
-                    "near": 0.10000000149011612,
-                    "far": 100,
-                    "focus": 10,
-                    "aspect": 1.375,
-                    "filmGauge": 35,
-                    "filmOffset": 0
-                }
-            },
             "zoneSquares": [],
             "doors": [
                 {
@@ -348,53 +301,6 @@
     },
     "zones": [
         {
-            "camera": {
-                "metadata": {
-                    "version": 4.6,
-                    "type": "Object",
-                    "generator": "Object3D.toJSON"
-                },
-                "object": {
-                    "uuid": "72822bcd-535d-424d-be23-421f13a07758",
-                    "type": "PerspectiveCamera",
-                    "name": "b-0-Camera",
-                    "userData": {
-                        "name": "b-0-Camera"
-                    },
-                    "layers": 1,
-                    "matrix": [
-                        1,
-                        0,
-                        0,
-                        0,
-                        0,
-                        1,
-                        0,
-                        0,
-                        0,
-                        0,
-                        1,
-                        0,
-                        0,
-                        0,
-                        0,
-                        1
-                    ],
-                    "up": [
-                        0,
-                        1,
-                        0
-                    ],
-                    "fov": 29.343503611293446,
-                    "zoom": 1,
-                    "near": 0.10000000149011612,
-                    "far": 100,
-                    "focus": 10,
-                    "aspect": 1.375,
-                    "filmGauge": 35,
-                    "filmOffset": 0
-                }
-            },
             "zoneSquares": [
                 500,
                 501,
@@ -421,53 +327,6 @@
             ]
         },
         {
-            "camera": {
-                "metadata": {
-                    "version": 4.6,
-                    "type": "Object",
-                    "generator": "Object3D.toJSON"
-                },
-                "object": {
-                    "uuid": "88ea7431-ff99-4174-8121-19c5fb90b7cf",
-                    "type": "PerspectiveCamera",
-                    "name": "b-1-Camera001",
-                    "userData": {
-                        "name": "b-1-Camera.001"
-                    },
-                    "layers": 1,
-                    "matrix": [
-                        1,
-                        0,
-                        0,
-                        0,
-                        0,
-                        1,
-                        0,
-                        0,
-                        0,
-                        0,
-                        1,
-                        0,
-                        0,
-                        0,
-                        0,
-                        1
-                    ],
-                    "up": [
-                        0,
-                        1,
-                        0
-                    ],
-                    "fov": 29.343503611293446,
-                    "zoom": 1,
-                    "near": 0.10000000149011612,
-                    "far": 100,
-                    "focus": 10,
-                    "aspect": 1.375,
-                    "filmGauge": 35,
-                    "filmOffset": 0
-                }
-            },
             "zoneSquares": [
                 508,
                 477,

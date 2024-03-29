@@ -94,11 +94,9 @@ const Game = () => {
       }
       const inDoor = isOverDoor(x,y)
       if (inDoor != null) {
-        setCurrentCursor('move')
+        setCurrentCursor('help')
         return
-      }
-      
-      setCurrentCursor('crosshair')      
+      }   
     }
 
     const handleMouseClick = (e) => {
@@ -301,13 +299,15 @@ const Game = () => {
           <Canvas shadows style={{cursor: currentCursor}}>
             <Suspense>
               <Arena
-                levels={levelData}
-                setLevels={setLevelData} 
+                levelData={levelData}
+                setLevelData={setLevelData} 
                 level={level} 
+                zone={zone}
                 levelDoor={levelDoor} 
                 playerDestination={playerDestination} 
                 setPlayerDestination={setPlayerDestination} 
                 setReachedDestination={setReachedDestination}
+                setCurrentCursor={setCurrentCursor}
                 rmb={rmb}
                 takeShot={takeShot}
                 setTakeShot={setTakeShot}

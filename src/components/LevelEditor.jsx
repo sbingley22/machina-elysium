@@ -157,7 +157,7 @@ const LevelEditor = () => {
     }
 
     const thisZone = {
-      camera: camObject,
+      //camera: camObject,
       zoneSquares: camZone
     }
     loggedLevel.zones[zone] = thisZone
