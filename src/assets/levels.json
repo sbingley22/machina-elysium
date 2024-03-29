@@ -180,7 +180,29 @@
                     "filmOffset": 0
                 }
             },
-            "zoneSquares": []
+            "zoneSquares": [],
+            "doors": [
+                {
+                    "destination": "a",
+                    "x": 2,
+                    "z": 15,
+                    "sx1": -999,
+                    "sy1": -999,
+                    "sx2": -999,
+                    "sy2": -999,
+                    "key": false
+                },
+                {
+                    "destination": "b",
+                    "x": 17,
+                    "z": 11,
+                    "sx1": 960,
+                    "sy1": 680,
+                    "sx2": 1100,
+                    "sy2": 800,
+                    "key": false
+                }
+            ]
         }
     ]
   },
@@ -384,6 +406,18 @@
                 507,
                 538,
                 539
+            ],
+            "doors": [
+                {
+                    "destination": "a",
+                    "x": 30,
+                    "z": 19,
+                    "sx1": 240,
+                    "sy1": 150,
+                    "sx2": 330,
+                    "sy2": 350,
+                    "key": false
+                }
             ]
         },
         {
