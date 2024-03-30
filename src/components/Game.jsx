@@ -34,8 +34,9 @@ const Game = () => {
   const femaleHurtAudio = useRef()
   const droneGrowlAudio = useRef()
 
-  const loadLevel = (lvl) => {
+  const loadLevel = (lvl, nextZone) => {
     if (level) setLevelDoor(level)
+    setZone(nextZone)
     setLevel(lvl)
   }  
   
@@ -44,6 +45,7 @@ const Game = () => {
     const isOverDoor = (x,y) => {
       const lvl = levelData[level].zones[zone]
       if (!lvl) return null
+      if (!lvl.doors) return null
 
       let inDoor = null
       lvl.doors.forEach( (door, index) => {
@@ -165,7 +167,7 @@ const Game = () => {
       window.removeEventListener("contextmenu", (e) => e.preventDefault());  
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [levelData, level])
+  }, [levelData, level, zone])
 
   // Reached destination
   useEffect(() => {
@@ -183,6 +185,8 @@ const Game = () => {
     if (destinationAction.type == "door") {
       let travel = false
       const destination = destinationAction.destination
+      const nextZone = destinationAction.nextZone
+
       if (destinationAction.key) {
         const containsItem = inventory.some(item => item.name === destination)
         if (containsItem) {
@@ -203,7 +207,7 @@ const Game = () => {
 
       if (travel) {
         //console.log("Going to " + destination)
-        loadLevel(destination)
+        loadLevel(destination, nextZone)
       }
     }
     else if (destinationAction.type == "item") {
@@ -258,13 +262,13 @@ const Game = () => {
   }, [playAudio])
 
   if (level == null) {
-    loadLevel("a")
+    loadLevel("a", 0)
     return (
       <div style={{cursor: currentCursor}}>
-        <button onClick={()=>loadLevel("a")}>
+        <button onClick={()=>loadLevel("a",0)}>
           New Game
         </button>
-        <button>Load 1</button>
+        <button>Load Game</button>
       </div>
     )
   }
@@ -304,6 +308,7 @@ const Game = () => {
                 setLevelData={setLevelData} 
                 level={level} 
                 zone={zone}
+                setZone={setZone}
                 levelDoor={levelDoor} 
                 playerDestination={playerDestination} 
                 setPlayerDestination={setPlayerDestination} 

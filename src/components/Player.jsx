@@ -10,7 +10,7 @@ import { useSkinnedMeshClone } from './SkinnedMeshClone'
 const vec3Pos = new THREE.Vector3()
 const vec3Dir = new THREE.Vector3()
 
-const Player = ({ playerPos, playerDestination, setReachedDestination, grid, gridScale, gridToWorld, worldToGrid, findPath, rmb, setTakeShot, setShotCharge, setPlayAudio }) => {
+const Player = ({ playerPos, playerDestination, setReachedDestination, grid, gridScale, gridToWorld, worldToGrid, findPath, setZone, zoneSquares, rmb, setTakeShot, setShotCharge, setPlayAudio }) => {
   const group = useRef()
   const { scene, nodes, animations } = useSkinnedMeshClone(modelGlb)
   // eslint-disable-next-line no-unused-vars
@@ -85,9 +85,25 @@ const Player = ({ playerPos, playerDestination, setReachedDestination, grid, gri
 
     if (distance < 0.1) {
       if (path.length < 2) setReachedDestination(path[0])
+
+      // Check if grid square is a zone square
+      const pathIndex = path[0][0] * grid.height + path[0][1]
+      let transitionIndex = -1
+      zoneSquares.forEach( (zs, index) => {
+        if (transitionIndex != -1) return
+
+        zs.forEach( s => {
+          if (s == pathIndex) {
+            transitionIndex = index
+            console.log("Changing to Zone: " + index)
+            return
+          }
+        })
+      })
+      if (transitionIndex != -1) setZone(transitionIndex)
+
       const newPath = [...path.slice(1)]
       setPath(newPath)
-      //console.log("slicing path")
       return
     }
 

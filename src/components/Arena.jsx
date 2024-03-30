@@ -5,6 +5,7 @@ import { useThree } from "@react-three/fiber"
 import { useEffect, useState } from "react"
 import Pathfinding from 'pathfinding'
 import { useRef } from 'react'
+// eslint-disable-next-line no-unused-vars
 import GridVisualiser from './GridVisualiser'
 import { useGLTF } from '@react-three/drei'
 import levelGlb from '../assets/Levels.glb?url'
@@ -21,6 +22,7 @@ const Arena = ({
     levelData, 
     level, 
     zone, 
+    setZone,
     levelDoor, 
     playerDestination, 
     setPlayerDestination, 
@@ -39,11 +41,12 @@ const Arena = ({
   const [camObject, setCamObject] = useState(null)
 
   const [grid, setGrid] = useState(null)
-  const [gridScale, setGridScale] = useState(0.5)
-  const [playerPos, setPlayerPos] = useState([0,0,0])
+  const [zoneSquares, setZoneSquares] = useState(null)
   const [gridClick, setGridClick] = useState([-1,-1])
-  const [enemies, setEnemies] = useState([])
+
   const playerRef = useRef(null)
+  const [enemies, setEnemies] = useState([])
+  const [playerPos, setPlayerPos] = useState([0,0,0])
 
   const loadCamera = () => {
     const camKey = Object.keys(levelNodes).find(key => key.startsWith(`${level}-${zone}-Cam`))
@@ -70,11 +73,18 @@ const Arena = ({
       const x = nodeIndex % tempGrid.width
       const z = Math.floor(nodeIndex / tempGrid.width)
       tempGrid.nodes[z][x].walkable = false
-    })
-    //console.log(lvl.grid.walkable)
-    
+    })    
     setGrid(tempGrid)
+    //console.log(lvl.grid.walkable)
 
+    // Load zone squares
+    const tempZoneSquares = []
+    lvl.zones.forEach( zone => {
+      tempZoneSquares.push(zone.zoneSquares)
+    })
+    setZoneSquares(tempZoneSquares)
+    //console.log(tempZoneSquares)
+    
     // Load camera
     loadCamera()
 
@@ -106,6 +116,12 @@ const Arena = ({
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [levelData, level, levelDoor])
+
+  // Zone change
+  useEffect(()=>{
+    loadCamera()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [zone])
   
   // Pathfinding
   const finder = new Pathfinding.AStarFinder({
@@ -267,6 +283,8 @@ const Arena = ({
         gridToWorld={gridToWorld}
         worldToGrid={worldToGrid}
         findPath={findPath}
+        setZone={setZone}
+        zoneSquares={zoneSquares}
         rmb={rmb}
         setTakeShot={setTakeShot}
         setShotCharge={setShotCharge}
