@@ -180,7 +180,7 @@ const LevelEditor = () => {
         />
 
         { levelData[level]?.zones[zone]?.items && levelData[level].zones[zone].items.map( (item, index) => (
-          !item.collected && <img key={item.name + index} src={"./items/" + item.image} className="item" style={{top: item.sy - 28 + "px", left: item.sx -28 + "px"}} />
+          !item.collected && <img key={item.name + index} src={"./items/" + item.image} className="item" style={{ top: item.sy - 28 + "px", left: item.sx -28 + "px", width: "56px" }} />
         ))
         }
 

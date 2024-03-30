@@ -6,6 +6,8 @@ import LevelEditor from './components/LevelEditor'
 
 function App() {
   const [mode, setMode] = useState(1)
+  // eslint-disable-next-line no-unused-vars
+  const [xMode, setXMode] = useState(0)
 
   const style = {
     backgroundImage: mode == 0 ? `url(./titleShot.png)` : '',
@@ -19,7 +21,6 @@ function App() {
       setMode(1)
 
       menuMusic.current.play()
-      //menuMusic.volume = 0.25
     }
     else if (mode == 1) {
       menuMusic.current.pause()
@@ -30,13 +31,14 @@ function App() {
     if (menuMusic.current) {
       menuMusic.current.volume = 0.025
     }
+    //setXMode(1)
   }, [])
 
   return (
     <>
       <div style={style} onClick={clicked}>
         { mode == 1 && <MainMenu setMode={setMode} /> }
-        { mode == 2 && <Game /> }
+        { mode == 2 && <Game xMode={xMode} /> }
         { mode == 9 && <LevelEditor /> }
 
         <audio

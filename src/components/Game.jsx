@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable react/no-unknown-property */
 import { KeyboardControls } from "@react-three/drei"
 import { Canvas } from "@react-three/fiber"
@@ -8,7 +9,7 @@ import Arena from "./Arena"
 import DialogUi from "./DialogUi"
 
 
-const Game = () => {
+const Game = ({ xMode }) => {
   const [currentCursor, setCurrentCursor] = useState('crosshair')
   const backgroundRef = useRef(null)
 
@@ -23,11 +24,16 @@ const Game = () => {
 
   const [inventory, setInventory] = useState([])
   const [dialog, setDialog] = useState([])
+  const [playerStatus, setPlayerStatus] = useState("Healthy")
+  const [playerFlag, setPlayerFlag] = useState({
+    action: "",
+    value: 0
+  })
 
   const [rmb, setRmb] = useState(false)
   const [takeShot, setTakeShot] = useState(-1)
   const [shotCharge, setShotCharge] = useState(0)
-  const [photoImg, setPhotoImg] = useState("nothing")
+  const [photoImg, setPhotoImg] = useState("static")
 
   const [playAudio, setPlayAudio] = useState(null)
   const cameraClickAudio = useRef()
@@ -286,7 +292,13 @@ const Game = () => {
         />
 
         { levelData[level]?.zones[zone]?.items && levelData[level].zones[zone].items.map( (item, index) => (
-          !item.collected && <img key={index} src={"./items/" + item.image} className="item" style={{top: item.sy - 28 + "px", left: item.sx -28 + "px"}} />
+          !item.collected && 
+            <img 
+              key={index} 
+              src={"./items/" + item.image} 
+              className="item" 
+              style={{top: item.sy - 28 + "px", left: item.sx -28 + "px", width: "56px"}}
+            />
         ))
         }
 
@@ -310,14 +322,17 @@ const Game = () => {
                 zone={zone}
                 setZone={setZone}
                 levelDoor={levelDoor} 
+                xMode={xMode}
                 playerDestination={playerDestination} 
                 setPlayerDestination={setPlayerDestination} 
                 setReachedDestination={setReachedDestination}
                 setCurrentCursor={setCurrentCursor}
+                playerFlag={playerFlag}
                 rmb={rmb}
                 takeShot={takeShot}
                 setTakeShot={setTakeShot}
                 setShotCharge={setShotCharge}
+                setPlayerStatus={setPlayerStatus}
                 setPhotoImg={setPhotoImg}
                 setPlayAudio={setPlayAudio}                
               />
@@ -329,7 +344,15 @@ const Game = () => {
 
       </div>
 
-      <SideBar />
+      <SideBar 
+        playerStatus={playerStatus} 
+        xMode={xMode} 
+        shotCharge={shotCharge} 
+        photoImg={photoImg} 
+        inventory={inventory} 
+        setInventory={setInventory} 
+        setPlayerFlag={setPlayerFlag}
+      />
 
       <audio
         id="bgMusic"

@@ -10,25 +10,36 @@ import { useSkinnedMeshClone } from './SkinnedMeshClone'
 const vec3Pos = new THREE.Vector3()
 const vec3Dir = new THREE.Vector3()
 
-const Player = ({ playerPos, playerDestination, setReachedDestination, grid, gridScale, gridToWorld, worldToGrid, findPath, setZone, zoneSquares, rmb, setTakeShot, setShotCharge, setPlayAudio }) => {
+const Player = ({ playerPos, playerDestination, setReachedDestination, grid, gridScale, gridToWorld, worldToGrid, findPath, setZone, zoneSquares, xMode, rmb, setTakeShot, setShotCharge, setPlayerStatus, setPlayAudio }) => {
   const group = useRef()
-  const { scene, nodes, animations } = useSkinnedMeshClone(modelGlb)
+  const { scene, nodes, animations, materials } = useSkinnedMeshClone(modelGlb)
   // eslint-disable-next-line no-unused-vars
   const { actions, names, mixer } = useAnimations(animations, scene) // scene must be added to useAnimations()
   //console.log(nodes)
+  const skin = useRef("Healthy")
 
   // Initialise nodes
   useEffect(() => {
-    console.log(nodes, names)
+    console.log(nodes, materials, names)
 
     let nodeArray = ["Eve", "EveGen"]
     nodeArray.forEach(node => {
       if (nodes[node]) nodes[node].castShadow = true
     })
 
+    nodeArray = ["Plane"]
+    nodeArray.forEach(node => {
+      if (nodes[node]) nodes[node].visible = false
+    })
+
     let node = "EveGen"
-    //node = "Eve"
+    if (xMode == 1) node = "Eve"
     if (nodes[node]) nodes[node].visible = false
+
+    nodeArray = ["Eve", "EveGen"]
+    nodeArray.forEach(node => {
+      if (nodes[node] && xMode == 1) nodes[node].material = materials.EveSkin
+    })
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [nodes])
@@ -181,14 +192,55 @@ const Player = ({ playerPos, playerDestination, setReachedDestination, grid, gri
       group.current.actionFlag = null
 
       // Reduce health
-
+      group.current.health -= 15
+      if (group.current.health < 0) {
+        group.current.actionFlag = "Player Dead"
+      } else if (group.current.health > 100) group.current.health = 100
 
       setPlayAudio("PlayerHurt")
     }
   }
 
   const updateModel = () => {
+    let currentSkin = "Healthy"
+    if (group.current.health < 33) {
+      currentSkin = "D2"
+    } else if (group.current.health < 66) {
+      currentSkin = "D1"
+    }
 
+    if (currentSkin != skin.current) {
+      // Update materials
+      setPlayerStatus(currentSkin)
+      let node = "Eve"
+
+      //console.log(nodes[node], materials.EveSwimsuitD1)
+
+      if (xMode == 1) {
+        node = "EveGen"
+        if (nodes[node]) {
+          if (currentSkin == "Healthy") {
+            nodes[node].material = materials.EveSkin
+          } else if (currentSkin == "D1") {
+            nodes[node].material = materials.EveSkinD1
+          } else if (currentSkin == "D2") {
+            nodes[node].material = materials.EveSkinD2
+          }
+        }
+      } else {
+        if (nodes[node]) {
+          if (currentSkin == "Healthy") {
+            nodes[node].material = materials.EveSwimsuit
+          } else if (currentSkin == "D1") {
+            nodes[node].material = materials.EveSwimsuitD1
+          } else if (currentSkin == "D2") {
+            nodes[node].material = materials.EveSwimsuitD2
+          }
+        }
+      }
+
+      skin.current = currentSkin
+    }
   }
 
   // Player wants to move
@@ -237,6 +289,7 @@ const Player = ({ playerPos, playerDestination, setReachedDestination, grid, gri
       position={[playerPos[0],0,playerPos[2]]}
       dispose={null}
       name='Player'
+      health={100}
       actionFlag={null}
       rotationFlag={null}
     >

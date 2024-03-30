@@ -24,14 +24,17 @@ const Arena = ({
     zone, 
     setZone,
     levelDoor, 
+    xMode,
     playerDestination, 
     setPlayerDestination, 
     setReachedDestination,
     setCurrentCursor,
+    playerFlag,
     rmb, 
     takeShot, 
     setTakeShot, 
-    setShotCharge, 
+    setShotCharge,
+    setPlayerStatus, 
     setPhotoImg, 
     setPlayAudio 
   }) => {
@@ -250,14 +253,19 @@ const Arena = ({
 
     if (hitEnemy) {
       setPhotoImg(prev => {
-        if (prev == "nq1") return "nq2"
-        if (prev == "nq2") return "nq3"
-        return "nq1"
+        if (prev == "doll1") return "doll2"
+        if (prev == "doll2") return "doll3"
+        return "doll1"
       })
-    } else setPhotoImg("nothing")
+    }
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[takeShot])  
+
+  // Update player flag
+  useEffect(()=>{
+    
+  }, [playerFlag])
 
   
   return (
@@ -285,9 +293,11 @@ const Arena = ({
         findPath={findPath}
         setZone={setZone}
         zoneSquares={zoneSquares}
+        xMode={xMode}
         rmb={rmb}
         setTakeShot={setTakeShot}
         setShotCharge={setShotCharge}
+        setPlayerStatus={setPlayerStatus}
         setPlayAudio={setPlayAudio}      
       />
 
@@ -303,6 +313,7 @@ const Arena = ({
           worldToGrid={worldToGrid}
           findPath={findPath}
           pointerOverEnemy={pointerOverEnemy}
+          xMode={xMode}
           setPlayAudio={setPlayAudio}
         />          
       ))}

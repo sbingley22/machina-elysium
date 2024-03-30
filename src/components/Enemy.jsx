@@ -10,9 +10,9 @@ import { useSkinnedMeshClone } from './SkinnedMeshClone'
 const vec3Pos = new THREE.Vector3()
 const vec3Dir = new THREE.Vector3()
 
-const Enemy = ({ id, type, initialPos, grid, gridScale, gridToWorld, worldToGrid, findPath, pointerOverEnemy, setPlayAudio }) => {
+const Enemy = ({ id, type, initialPos, grid, gridScale, gridToWorld, worldToGrid, findPath, xMode, pointerOverEnemy, setPlayAudio }) => {
   const group = useRef()
-  const { scene, nodes, animations } = useSkinnedMeshClone(modelGlb)
+  const { scene, nodes, animations, materials } = useSkinnedMeshClone(modelGlb)
   const { actions, mixer } = useAnimations(animations, scene) // scene must be added to useAnimations()
 
   // Initialise nodes
@@ -24,9 +24,19 @@ const Enemy = ({ id, type, initialPos, grid, gridScale, gridToWorld, worldToGrid
       if (nodes[node]) nodes[node].castShadow = true
     })
 
+    nodeArray = ["Plane"]
+    nodeArray.forEach(node => {
+      if (nodes[node]) nodes[node].visible = false
+    })
+
     let node = "EveGen"
-    node = "Eve"
+    if (xMode == 1) node = "Eve"
     if (nodes[node]) nodes[node].visible = false
+
+    nodeArray = ["Eve", "EveGen"]
+    nodeArray.forEach(node => {
+      if (nodes[node]) nodes[node].material = materials.EveEvil
+    })
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [nodes])
