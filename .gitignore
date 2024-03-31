@@ -25,4 +25,9 @@ dist-ssr
 
 public/dev/*
 public/mod/*
+public/levels/dev/*
+public/status/dev/*
+public/photos/dev/*
+public/items/dev/*
+public/audio/dev/*
 src/assets/dev/*

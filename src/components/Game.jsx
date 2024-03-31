@@ -270,7 +270,7 @@ const Game = ({ xMode }) => {
   if (level == null) {
     loadLevel("a", 0)
     return (
-      <div style={{cursor: currentCursor}}>
+      <div>
         <button onClick={()=>loadLevel("a",0)}>
           New Game
         </button>

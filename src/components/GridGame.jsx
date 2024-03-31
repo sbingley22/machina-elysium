@@ -43,7 +43,7 @@ const GridGame = ({ grid, gridScale = 0.5, setGridClick, setCurrentCursor }) => 
         rotation-x={-Math.PI/2}
         onClick={handleClick}
         onPointerMove={handleMove}
-        onPointerLeave={setCurrentCursor("crosshair")}
+        onPointerLeave={()=>setCurrentCursor("crosshair")}
       >
         <planeGeometry />
         <shadowMaterial attach="material" opacity={0.8} transparent />

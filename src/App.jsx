@@ -5,13 +5,14 @@ import Game from './components/Game'
 import LevelEditor from './components/LevelEditor'
 
 function App() {
-  const [mode, setMode] = useState(1)
+  const [mode, setMode] = useState(0)
   // eslint-disable-next-line no-unused-vars
   const [xMode, setXMode] = useState(0)
 
   const style = {
     backgroundImage: mode == 0 ? `url(./titleShot.png)` : '',
-    height: "100%"
+    height: "100%",
+    textAlign: "right"
   }
 
   const menuMusic = useRef()
