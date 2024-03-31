@@ -279,7 +279,7 @@ const Game = ({ xMode }) => {
     )
   }
 
-  const backgroundImg = level ? `url(./levels/${level}${zone}.png)` : ''
+  const backgroundImg = level ? `url(./levels/${level}${zone}.gif)` : ''
   
   return (
     <div className="game">

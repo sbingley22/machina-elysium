@@ -25,7 +25,7 @@ const LevelEditor = () => {
   const [otherCamZones, setOtherCamZones] = useState([])
 
   const backgroundRef = useRef()
-  const backgroundImg = `url(./levels/${level}${zone}.png)`
+  const backgroundImg = `url(./levels/${level}${zone}.gif)`
 
   const [grid, setGrid] = useState(null)
   const [gridSize, setGridSize] = useState([10,10])

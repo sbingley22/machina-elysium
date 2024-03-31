@@ -28,7 +28,7 @@ const SideBar = ({ playerStatus, xMode, shotCharge, photoImg, inventory, setInve
   if (shotCharge == 1) borderCol = "grey"
   if (shotCharge == 2) borderCol = "white"
 
-  const statusImage = `./status/${playerStatus}-${costume}.png`
+  const statusImage = `./status/${playerStatus}-${costume}.gif`
   const photoImage = `./photos/${photoImg}.jpg`
 
   const statusStyle = {
