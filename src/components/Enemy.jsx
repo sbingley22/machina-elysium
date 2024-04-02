@@ -184,8 +184,9 @@ const Enemy = ({ id, type, status, initialPos, grid, gridScale, gridToWorld, wor
   useEffect(()=>{
     if (status == 0) {
       // Set enemy to dead
-      
+      actions["KO"].reset().play()
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status])
 
   // eslint-disable-next-line no-unused-vars

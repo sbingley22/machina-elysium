@@ -7,6 +7,7 @@ import SideBar from "./SideBar"
 import levelsJson from '../assets/levels.json'
 import Arena from "./Arena"
 import DialogUi from "./DialogUi"
+import { EffectComposer, Glitch, Pixelation } from "@react-three/postprocessing"
 
 
 const Game = ({ xMode }) => {
@@ -39,6 +40,8 @@ const Game = ({ xMode }) => {
   const cameraClickAudio = useRef()
   const femaleHurtAudio = useRef()
   const droneGrowlAudio = useRef()
+
+  const [pixelation, setPixelation] = useState(0)
 
   const loadLevel = (lvl, nextZone) => {
     if (level) setLevelDoor(level)
@@ -254,6 +257,8 @@ const Game = ({ xMode }) => {
       if (volume > 1) volume = 1
       cameraClickAudio.current.play()
       cameraClickAudio.current.volume = 0.33 * volume
+
+      setShotCharge(0)
     }
   }, [takeShot])
 
@@ -337,7 +342,21 @@ const Game = ({ xMode }) => {
                 setPlayAudio={setPlayAudio}                
               />
             </Suspense>
+            
+
+            <EffectComposer>
+              {/* <Noise opacity={0.2} /> */}
+              <Glitch
+                delay={[0.1, 2.2]} // min and max glitch delay
+                duration={[0.1, 1.1]} // min and max glitch duration
+                strength={[0.1, 0.2]} // min and max glitch strength
+                active={playerStatus == "D2"}
+              />
+              <Pixelation granularity={pixelation} />
+            </EffectComposer>
+
           </Canvas>
+
         </KeyboardControls>
 
         {dialog.length > 0 && <DialogUi dialog={dialog} setDialog={setDialog} />}

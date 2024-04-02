@@ -28,5 +28,5 @@ No need for a server.
 
 my setup:
 
-npm i three @react-three/fiber @react-three/drei pathfinding
+npm i three @react-three/fiber @react-three/drei @react-three/postprocessing pathfinding
 npm i --save-dev vite-plugin-singlefile
