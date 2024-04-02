@@ -10,7 +10,7 @@ import { useSkinnedMeshClone } from './SkinnedMeshClone'
 const vec3Pos = new THREE.Vector3()
 const vec3Dir = new THREE.Vector3()
 
-const Player = ({ playerPos, playerDestination, setReachedDestination, grid, gridScale, gridToWorld, worldToGrid, findPath, setZone, zoneSquares, xMode, rmb, setTakeShot, setShotCharge, setPlayerStatus, setPlayAudio }) => {
+const Player = ({ playerPos, playerDestination, setReachedDestination, grid, gridScale, gridToWorld, worldToGrid, findPath, setZone, zoneSquares, xMode, playerFlag, rmb, setTakeShot, setShotCharge, setPlayerStatus, setPlayAudio }) => {
   const group = useRef()
   const { scene, nodes, animations, materials } = useSkinnedMeshClone(modelGlb)
   // eslint-disable-next-line no-unused-vars
@@ -194,8 +194,9 @@ const Player = ({ playerPos, playerDestination, setReachedDestination, grid, gri
       // Reduce health
       group.current.health -= 15
       if (group.current.health < 0) {
-        group.current.actionFlag = "Player Dead"
-      } else if (group.current.health > 100) group.current.health = 100
+        //group.current.actionFlag = "Player Dead"
+        setPlayerStatus("Dead")
+      }
 
       setPlayAudio("PlayerHurt")
     }
@@ -257,6 +258,16 @@ const Player = ({ playerPos, playerDestination, setReachedDestination, grid, gri
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [playerDestination])
+
+  // Player state flags
+  useEffect(()=>{
+    if (playerFlag.action == "healing") {
+      group.current.health += playerFlag.value
+      if (group.current.health > 100) group.current.health = 100
+
+      
+    }
+  }, [playerFlag])
 
   // Mixer functions. Listen for animation end, etc.
   useEffect(() => {

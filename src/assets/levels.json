@@ -183,6 +183,34 @@
                     "image": "medigel.png",
                     "scale": 1
                 }
+            ],
+            "interactables": [
+                {
+                    "x": 2,
+                    "z": 10,
+                    "sx": 345,
+                    "sy": 290,
+                    "radius": 30,
+                    "photo": null,
+                    "dialog": [
+                        "Service Manual for EvaDroid Genesis",
+                        "Take only the equipment needed for the job, as you only have limited storage capacity",
+                        "Use your hand camera (RMB) to take photographs and scan targets",
+                        "EvaDroids bodies are disposable. Just make sure your memory is uploaded to the cloud."
+                    ]
+                },
+                {
+                    "x": 3,
+                    "z": 15,
+                    "sx": 625,
+                    "sy": 190,
+                    "radius": 30,
+                    "photo": null,
+                    "dialog": [
+                        "It says EvaDroid Genesis spawn pod.",
+                        "I guess this one belongs to me."
+                    ]
+                }
             ]
         }
     ]
@@ -329,7 +357,7 @@
     },
     "enemies": [
         {
-            "x": 18,
+            "x": 16,
             "z": 2,
             "type": "doll",
             "status": 1

@@ -9,7 +9,6 @@ import Arena from "./Arena"
 import DialogUi from "./DialogUi"
 import { EffectComposer, Glitch, Pixelation } from "@react-three/postprocessing"
 
-
 const Game = ({ xMode }) => {
   const [currentCursor, setCurrentCursor] = useState('crosshair')
   const backgroundRef = useRef(null)
@@ -41,10 +40,11 @@ const Game = ({ xMode }) => {
   const femaleHurtAudio = useRef()
   const droneGrowlAudio = useRef()
 
+  // eslint-disable-next-line no-unused-vars
   const [pixelation, setPixelation] = useState(0)
 
-  const loadLevel = (lvl, nextZone) => {
-    if (level) setLevelDoor(level)
+  const loadLevel = (lvl, nextZone, manualDoor = false) => {
+    if (level && !manualDoor) setLevelDoor(level)
     setZone(nextZone)
     setLevel(lvl)
   }  
@@ -89,6 +89,27 @@ const Game = ({ xMode }) => {
       return overItem
     }
 
+    const isOverInteractable = (x,y) => {
+      const lvl = levelData[level].zones[zone]
+      if (!lvl) return null
+
+      let overInteractable = null
+      if (!lvl.interactables) return null
+      lvl.interactables.forEach( (interactable, index) => {
+        const sx =  parseInt(interactable.sx)
+        const sy =  parseInt(interactable.sy)
+        const radius =  parseInt(interactable.radius)
+        if (x < sx - radius) return
+        if (x > sx + radius) return
+        if (y < sy - radius) return
+        if (y > sy + radius) return
+        overInteractable = index
+      })
+
+      return overInteractable
+    }
+
+
     const handleMouseMove = (e) => {
       const backgroundDiv = backgroundRef.current;
       if (!backgroundDiv) return;
@@ -103,6 +124,11 @@ const Game = ({ xMode }) => {
         setCurrentCursor('pointer')
         return
       }
+      const overInteractable = isOverInteractable(x,y)
+      if (overInteractable != null) {
+        setCurrentCursor('pointer')
+        return
+      }
       const inDoor = isOverDoor(x,y)
       if (inDoor != null) {
         setCurrentCursor('help')
@@ -111,6 +137,9 @@ const Game = ({ xMode }) => {
     }
 
     const handleMouseClick = (e) => {
+      if (dialog.length > 0) return // Don't interact with level whilst dialog is present
+      //console.log(dialog)
+
       const backgroundDiv = backgroundRef.current
       if (!backgroundDiv) return
 
@@ -155,6 +184,19 @@ const Game = ({ xMode }) => {
         }
       }
 
+      const overInteractable = isOverInteractable(x,y)
+      if (overInteractable != null) {
+        const interactable = levelData[level].zones[zone].interactables[overInteractable]
+        const dest = [parseInt(interactable.x), parseInt(interactable.z)]
+        setPlayerDestination(dest)
+
+        action = {
+          type: "interactable",
+          index: overInteractable,
+          coord: dest,
+        }
+      }
+
       setDestinationAction(action)
     }
 
@@ -176,7 +218,7 @@ const Game = ({ xMode }) => {
       window.removeEventListener("contextmenu", (e) => e.preventDefault());  
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [levelData, level, zone])
+  }, [levelData, level, zone, dialog])
 
   // Reached destination
   useEffect(() => {
@@ -244,6 +286,16 @@ const Game = ({ xMode }) => {
       }
       setInventory(tempInventory)
     }
+    else if (destinationAction.type == "interactable") {
+      // Display Dialog
+      const interactable = levelData[level].zones[zone].interactables[destinationAction.index]
+      setDialog(interactable.dialog)
+
+      if (interactable.photo != null) {
+        // Display photo
+
+      }
+    }
 
     setReachedDestination(null)
 
@@ -261,6 +313,26 @@ const Game = ({ xMode }) => {
       setShotCharge(0)
     }
   }, [takeShot])
+
+  // Player Dead
+  useEffect(()=>{
+    if (playerStatus == "Dead") {
+      setPlayerFlag({
+        action: "respawn",
+        value: 0
+      })
+      setLevelDoor("a")
+      loadLevel("a", 0, true)
+      setPlayerStatus("Healthy")
+      setDialog(["Urrgh! Back again..."])
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[playerStatus])
+
+  // Initialise Audio
+  useEffect(() => {
+    femaleHurtAudio.current.volume = 0.2
+  }, [])
 
   // Play Audio
   useEffect(() => {
@@ -345,11 +417,10 @@ const Game = ({ xMode }) => {
             
 
             <EffectComposer>
-              {/* <Noise opacity={0.2} /> */}
               <Glitch
-                delay={[0.1, 2.2]} // min and max glitch delay
-                duration={[0.1, 1.1]} // min and max glitch duration
-                strength={[0.1, 0.2]} // min and max glitch strength
+                delay={[0.1, 2.2]}
+                duration={[0.1, 1.1]}
+                strength={[0.1, 0.2]}
                 active={playerStatus == "D2"}
               />
               <Pixelation granularity={pixelation} />

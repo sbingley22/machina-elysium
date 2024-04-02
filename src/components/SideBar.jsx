@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 
 
-const SideBar = ({ playerStatus, xMode, shotCharge, photoImg, inventory, setInventory }) => {
+const SideBar = ({ playerStatus, xMode, shotCharge, photoImg, inventory, setInventory, setPlayerFlag }) => {
   let costume = "Swimsuit"
 
   if (xMode) {
@@ -11,10 +11,14 @@ const SideBar = ({ playerStatus, xMode, shotCharge, photoImg, inventory, setInve
   const itemClicked = (index) => {
     const item = inventory[index]
     let removeItem = false
-    console.log(item)
+    //console.log(item)
 
     if (item.type == "healing") {
       removeItem = true
+      setPlayerFlag({
+        action: "healing",
+        value: 35
+      })
     }
 
     if (removeItem) {

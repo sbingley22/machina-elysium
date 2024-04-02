@@ -275,7 +275,9 @@ const Arena = ({
 
   // Update player flag
   useEffect(()=>{
-    
+    if (playerFlag.action == "respawn") {
+      playerRef.current.health = 100
+    }
   }, [playerFlag])
 
   
@@ -305,6 +307,7 @@ const Arena = ({
         setZone={setZone}
         zoneSquares={zoneSquares}
         xMode={xMode}
+        playerFlag={playerFlag}
         rmb={rmb}
         setTakeShot={setTakeShot}
         setShotCharge={setShotCharge}
