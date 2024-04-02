@@ -34,15 +34,17 @@
   width: 100%;
   height: 100%;
   margin: 0;
-  padding: 5px;
+  padding: 0px;
   background-color: rgb(33,44,55);
   display: grid;
   grid-template-rows: 1fr 1fr;
+  border: 2px solid black;
 }
 
 .sidebar .top {
   display: grid;
   grid-template-columns: 3fr 2fr;
+  border: 2px solid black;
 }
 
 
@@ -62,4 +64,18 @@ button {
 
 .item {
   position: absolute;
+}
+
+.ui {
+  padding: 2px;
+  border: 2px solid black;
+}
+
+.status {
+  margin: auto 0;
+}
+
+.photos {
+  border: 2px solid black;
+  margin: auto 0;
 }

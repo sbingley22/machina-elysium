@@ -331,7 +331,8 @@
         {
             "x": 18,
             "z": 2,
-            "type": "doll"
+            "type": "doll",
+            "status": 1
         }
     ],
     "zones": [
@@ -374,6 +375,20 @@
                 471,
                 470,
                 469
+            ],
+            "items": [
+                {
+                    "name": "med gel",
+                    "type": "healing",
+                    "x": 1,
+                    "z": 14,
+                    "sx": 1030,
+                    "sy": 415,
+                    "radius": 15,
+                    "collected": false,
+                    "image": "medigel.png",
+                    "scale": 1
+                }
             ]
         }
     ]

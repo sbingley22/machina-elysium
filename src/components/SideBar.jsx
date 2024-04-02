@@ -29,7 +29,7 @@ const SideBar = ({ playerStatus, xMode, shotCharge, photoImg, inventory, setInve
   if (shotCharge == 2) borderCol = "white"
 
   const statusImage = `./status/${playerStatus}-${costume}.gif`
-  const photoImage = `./photos/${photoImg}.jpg`
+  const photoImage = `./photos/${photoImg}.png`
 
   const statusStyle = {
     width: '100%',
@@ -48,6 +48,13 @@ const SideBar = ({ playerStatus, xMode, shotCharge, photoImg, inventory, setInve
     display: "block"
   }
 
+  const itemStyle = {
+    userSelect: "none",
+    cursor: "pointer",
+    borderBottom: "1px solid black",
+    textAlign: "center"
+  }
+
   return (
     <div className="sidebar">
       <div className="top">
@@ -59,7 +66,7 @@ const SideBar = ({ playerStatus, xMode, shotCharge, photoImg, inventory, setInve
             <div
               key={index}
               onClick={()=>itemClicked(index)}
-              style={{userSelect: "none", cursor: "pointer"}}
+              style={itemStyle}
             >
               { item.label }
             </div>

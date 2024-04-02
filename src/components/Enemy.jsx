@@ -10,7 +10,7 @@ import { useSkinnedMeshClone } from './SkinnedMeshClone'
 const vec3Pos = new THREE.Vector3()
 const vec3Dir = new THREE.Vector3()
 
-const Enemy = ({ id, type, initialPos, grid, gridScale, gridToWorld, worldToGrid, findPath, xMode, pointerOverEnemy, setPlayAudio }) => {
+const Enemy = ({ id, type, status, initialPos, grid, gridScale, gridToWorld, worldToGrid, findPath, xMode, pointerOverEnemy, setPlayAudio }) => {
   const group = useRef()
   const { scene, nodes, animations, materials } = useSkinnedMeshClone(modelGlb)
   const { actions, mixer } = useAnimations(animations, scene) // scene must be added to useAnimations()
@@ -124,7 +124,7 @@ const Enemy = ({ id, type, initialPos, grid, gridScale, gridToWorld, worldToGrid
 
     // Attack player?
     const distance = playerRef.current.position.distanceTo(group.current.position)
-    if (distance < 1.5 && currentAnimation.current != "Claw") {
+    if (distance < 1.2 && currentAnimation.current != "Claw") {
       //console.log(distance)
       group.current.actionFlag = "Claw"
       playerRef.current.actionFlag = "Take Damage"
@@ -181,11 +181,19 @@ const Enemy = ({ id, type, initialPos, grid, gridScale, gridToWorld, worldToGrid
     return () => mixer.removeEventListener('finished')
   }, [mixer, actions])
 
+  useEffect(()=>{
+    if (status == 0) {
+      // Set enemy to dead
+      
+    }
+  }, [status])
+
   // eslint-disable-next-line no-unused-vars
   useFrame((state, delta) => {
     if (!scene) return
     if (dead) return
     if (group.current.actionFlag == "Player Dead") return
+    if (status == 0) return
 
     // find player
     if (!playerRef.current) {

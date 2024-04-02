@@ -20,6 +20,7 @@ const gridScale = 0.5
 
 const Arena = ({ 
     levelData, 
+    setLevelData,
     level, 
     zone, 
     setZone,
@@ -110,7 +111,8 @@ const Arena = ({
           gx: enemyPos[0],
           gz: enemyPos[1],
           type: en.type,
-          health: 100
+          health: 100,
+          status: en.status
         })
       })
       setEnemies(tempEnemies)
@@ -118,7 +120,7 @@ const Arena = ({
     } else setEnemies([])
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [levelData, level, levelDoor])
+  }, [level, levelDoor])
 
   // Zone change
   useEffect(()=>{
@@ -229,7 +231,7 @@ const Arena = ({
 
     let hitEnemy = false
 
-    enemies.forEach( en => {
+    enemies.forEach( (en, index) => {
       const enemy = findNodeByName(scene, en.type+en.id)
       //console.log(enemy)
       const mousePos = getMousePos()
@@ -249,13 +251,22 @@ const Arena = ({
 
       enemy.health -= shotPower * 20
       enemy.actionFlag = "Take Damage"
+
+      // is enemy dead
+      if (enemy.health < 0) {
+        // Update levels
+        const tempLevels = {...levelData}
+        const enemy = tempLevels[level].enemies[index]
+        enemy.status = 0
+        setLevelData(tempLevels)
+      }
     })
 
     if (hitEnemy) {
       setPhotoImg(prev => {
-        if (prev == "doll1") return "doll2"
-        if (prev == "doll2") return "doll3"
-        return "doll1"
+        if (prev == "DollPhoto1") return "DollPhoto2"
+        if (prev == "DollPhoto2") return "DollPhoto3"
+        return "DollPhoto1"
       })
     }
 
@@ -275,8 +286,8 @@ const Arena = ({
         position={[0,10,0]} 
         castShadow
         shadow-camera-left={0}
-        shadow-camera-right={10}
-        shadow-camera-top={10}
+        shadow-camera-right={20}
+        shadow-camera-top={20}
         shadow-camera-bottom={0}
       />
 
@@ -306,6 +317,7 @@ const Arena = ({
           key={en.id}
           id={en.id}
           type={en.type}
+          status={en.status}
           initialPos={[en.gx,0,en.gz]}
           grid={grid}
           gridScale={gridScale}

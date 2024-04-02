@@ -23,7 +23,7 @@ const MainMenu = ({ setMode }) => {
 
   const optionsStyle = {
     display: "grid",
-    gridTemplateRows: "1fr 1fr 1fr 5fr"
+    gridTemplateRows: "4fr 1fr 1fr 1fr"
   }
 
   return (
