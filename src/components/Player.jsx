@@ -106,7 +106,7 @@ const Player = ({ playerPos, playerDestination, setReachedDestination, grid, gri
         zs.forEach( s => {
           if (s == pathIndex) {
             transitionIndex = index
-            console.log("Changing to Zone: " + index)
+            //console.log("Changing to Zone: " + index)
             return
           }
         })

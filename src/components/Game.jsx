@@ -247,7 +247,7 @@ const Game = ({ xMode }) => {
 
           // Update levels
           const tempLevels = {...levelData}
-          const door = tempLevels[level].doors[destinationAction.index]
+          const door = tempLevels[level].zones[zone].doors[destinationAction.index]
           door.key = null
           setLevelData(tempLevels)
           

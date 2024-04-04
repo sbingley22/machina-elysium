@@ -13,6 +13,7 @@ const gridScale = 0.5
 const LevelEditor = () => {
   const { nodes } = useGLTF(levelGlb)
 
+  // eslint-disable-next-line no-unused-vars
   const [levelData, setLevelData] = useState(levelJson)
   const [level, setLevel] = useState("a")
   const [zone, setZone] = useState(0)

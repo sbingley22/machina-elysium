@@ -141,7 +141,11 @@ const Arena = ({
     if (start[0] > grid.width || start[1] > grid.height) return []
     if (end[0] < 0 || end[1] < 0) return []
     if (end[0] > grid.width || end[1] > grid.height) return []
-    //console.log(start, end)
+    
+    console.log(start, end, grid)
+
+    if (!grid.nodes[start[1]][start[0]]) return []
+    if (!grid.nodes[end[1]][end[0]]) return []
     
     gridClone.setWalkableAt(start[0], start[1], true)
     const path = finder.findPath(start[0], start[1], end[0], end[1], gridClone)
