@@ -8,6 +8,7 @@ function App() {
   const [mode, setMode] = useState(0)
   // eslint-disable-next-line no-unused-vars
   const [xMode, setXMode] = useState(0)
+  const [difficulty, setDifficulty] = useState(1)
 
   const style = {
     backgroundImage: mode == 0 ? `url(./titleShot.png)` : '',
@@ -30,7 +31,7 @@ function App() {
 
   useEffect(() => {
     if (menuMusic.current) {
-      menuMusic.current.volume = 0.025
+      menuMusic.current.volume = 0.25
     }
     //setXMode(1)
   }, [])
@@ -38,8 +39,8 @@ function App() {
   return (
     <>
       <div style={style} onClick={clicked}>
-        { mode == 1 && <MainMenu setMode={setMode} /> }
-        { mode == 2 && <Game xMode={xMode} /> }
+        { mode == 1 && <MainMenu setMode={setMode} setDifficulty={setDifficulty} /> }
+        { mode == 2 && <Game difficulty={difficulty} xMode={xMode} /> }
         { mode == 9 && <LevelEditor /> }
 
         <audio

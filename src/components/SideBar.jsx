@@ -1,7 +1,9 @@
 /* eslint-disable react/prop-types */
 
+import MorgueKeypad from "./puzzles/MorgueKeypad"
 
-const SideBar = ({ playerStatus, xMode, shotCharge, photoImg, inventory, setInventory, setPlayerFlag }) => {
+
+const SideBar = ({ playerStatus, xMode, shotCharge, photoImg, inventory, setInventory, setPlayerFlag, puzzle, setPuzzle, setDialog }) => {
   let costume = "Swimsuit"
 
   if (xMode) {
@@ -78,8 +80,11 @@ const SideBar = ({ playerStatus, xMode, shotCharge, photoImg, inventory, setInve
           ))}
         </div>
       </div>
-      <div className="photos">
-        <img src={photoImage} style={photosStyle} /> 
+      <div>
+        { puzzle == null && <div className="photos">
+          <img src={photoImage} style={photosStyle} />
+        </div> }
+        { puzzle == "morgueKeypad" && <MorgueKeypad setPuzzle={setPuzzle} inventory={inventory} setInventory={setInventory} setDialog={setDialog} />}
       </div>
     </div>
   )

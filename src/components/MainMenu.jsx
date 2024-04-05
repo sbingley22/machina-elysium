@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 
-const MainMenu = ({ setMode }) => {
+const MainMenu = ({ setMode, setDifficulty }) => {
 
   const style = {
     backgroundImage: 'url(./title.gif)',
@@ -36,6 +36,15 @@ const MainMenu = ({ setMode }) => {
           onClick={()=>{setMode(2)}}
         >
           Play
+        </button>
+        <button
+          style={buttonStyle}
+          onClick={()=>{
+            setDifficulty(0)
+            setMode(2)
+          }}
+        >
+          Play (Easy Mode)
         </button>
         <button
           style={buttonStyle}

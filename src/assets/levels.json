@@ -490,7 +490,7 @@
                     "sy1": 480,
                     "sx2": 725,
                     "sy2": 600,
-                    "key": false
+                    "key": "g"
                 }
             ]            
         }
@@ -549,7 +549,7 @@
             "interactables": [
                 {
                     "x": 3,
-                    "z": 7,
+                    "z": 6,
                     "sx": 100,
                     "sy": 530,
                     "radius": 30,
@@ -561,7 +561,7 @@
                 },
                 {
                     "x": 27,
-                    "z": 7,
+                    "z": 6,
                     "sx": 620,
                     "sy": 520,
                     "radius": 30,
@@ -581,6 +581,16 @@
                         "One body per morgue pod.",
                         "To open pod enter droid ID."
                     ]
+                }
+            ],
+            "puzzles": [
+                {
+                    "x": 11,
+                    "z": 6,
+                    "sx": 440,
+                    "sy": 520,
+                    "radius": 30,
+                    "name": "morgueKeypad"
                 }
             ]
         }
@@ -1092,6 +1102,20 @@
             311
         ]
     },
+    "enemies": [
+        {
+            "x": 8,
+            "z": 20,
+            "type": "doll",
+            "status": 1
+        },
+        {
+            "x": 1,
+            "z": 10,
+            "type": "doll",
+            "status": 1
+        }
+    ],
     "zones": [
         {
             "zoneSquares": [
@@ -1102,11 +1126,25 @@
                     "zone": 0,
                     "x": 1,
                     "z": 3,
-                    "sx1": 325,
-                    "sy1": 790,
-                    "sx2": 1100,
+                    "sx1": 0,
+                    "sy1": 770,
+                    "sx2": 500,
                     "sy2": 800,
-                    "key": false
+                    "key": "g"
+                }
+            ],
+            "interactables": [
+                {
+                    "x": 7,
+                    "z": 22,
+                    "sx": 770,
+                    "sy": 480,
+                    "radius": 30,
+                    "photo": null,
+                    "dialog": [
+                        "Thank you for playing Machina Elysium",
+                        "END OF DEMO"
+                    ]
                 }
             ]
         }

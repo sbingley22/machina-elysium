@@ -9,7 +9,7 @@ import Arena from "./Arena"
 import DialogUi from "./DialogUi"
 import { EffectComposer, Glitch, Pixelation } from "@react-three/postprocessing"
 
-const Game = ({ xMode }) => {
+const Game = ({ difficulty, xMode }) => {
   const [currentCursor, setCurrentCursor] = useState('crosshair')
   const backgroundRef = useRef(null)
 
@@ -23,7 +23,8 @@ const Game = ({ xMode }) => {
   const [reachedDestination, setReachedDestination] = useState(null)
 
   const [inventory, setInventory] = useState([])
-  const [dialog, setDialog] = useState([])
+  const [dialog, setDialog] = useState(["Where am I?"])
+  const [puzzle, setPuzzle] = useState(null)
   const [playerStatus, setPlayerStatus] = useState("Healthy")
   const [playerFlag, setPlayerFlag] = useState({
     action: "",
@@ -109,6 +110,26 @@ const Game = ({ xMode }) => {
       return overInteractable
     }
 
+    const isOverPuzzle = (x,y) => {
+      const lvl = levelData[level].zones[zone]
+      if (!lvl) return null
+
+      let overPuzzle = null
+      if (!lvl.puzzles) return null
+      lvl.puzzles.forEach( (puzzleData, index) => {
+        const sx =  parseInt(puzzleData.sx)
+        const sy =  parseInt(puzzleData.sy)
+        const radius =  parseInt(puzzleData.radius)
+        if (x < sx - radius) return
+        if (x > sx + radius) return
+        if (y < sy - radius) return
+        if (y > sy + radius) return
+        overPuzzle = index
+      })
+
+      return overPuzzle
+    }
+
 
     const handleMouseMove = (e) => {
       const backgroundDiv = backgroundRef.current;
@@ -126,6 +147,11 @@ const Game = ({ xMode }) => {
       }
       const overInteractable = isOverInteractable(x,y)
       if (overInteractable != null) {
+        setCurrentCursor('pointer')
+        return
+      }
+      const overPuzzle = isOverPuzzle(x,y)
+      if (overPuzzle != null) {
         setCurrentCursor('pointer')
         return
       }
@@ -193,6 +219,19 @@ const Game = ({ xMode }) => {
         action = {
           type: "interactable",
           index: overInteractable,
+          coord: dest,
+        }
+      }
+
+      const overPuzzle = isOverPuzzle(x,y)
+      if (overPuzzle != null) {
+        const puzzleData = levelData[level].zones[zone].puzzles[overPuzzle]
+        const dest = [parseInt(puzzleData.x), parseInt(puzzleData.z)]
+        setPlayerDestination(dest)
+
+        action = {
+          type: "puzzle",
+          index: overPuzzle,
           coord: dest,
         }
       }
@@ -295,6 +334,11 @@ const Game = ({ xMode }) => {
         // Display photo
 
       }
+    }
+    else if (destinationAction.type == "puzzle") {
+      const puzzleData = levelData[level].zones[zone].puzzles[destinationAction.index]
+      setPuzzle(puzzleData.name)
+      //console.log(puzzleData.name, puzzle)
     }
 
     setReachedDestination(null)
@@ -399,6 +443,7 @@ const Game = ({ xMode }) => {
                 zone={zone}
                 setZone={setZone}
                 levelDoor={levelDoor} 
+                difficulty={difficulty}
                 xMode={xMode}
                 playerDestination={playerDestination} 
                 setPlayerDestination={setPlayerDestination} 
@@ -415,7 +460,6 @@ const Game = ({ xMode }) => {
               />
             </Suspense>
             
-
             <EffectComposer>
               <Glitch
                 delay={[0.1, 2.2]}
@@ -442,13 +486,16 @@ const Game = ({ xMode }) => {
         inventory={inventory} 
         setInventory={setInventory} 
         setPlayerFlag={setPlayerFlag}
+        puzzle={puzzle}
+        setPuzzle={setPuzzle}
+        setDialog={setDialog}
       />
 
       <audio
         id="bgMusic"
         src='./audio/creepy-music.wav'
         loop
-        autoPlay={false}
+        autoPlay={true}
       />
 
       <audio

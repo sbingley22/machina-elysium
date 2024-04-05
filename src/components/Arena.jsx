@@ -25,6 +25,7 @@ const Arena = ({
     zone, 
     setZone,
     levelDoor, 
+    difficulty,
     xMode,
     playerDestination, 
     setPlayerDestination, 
@@ -142,10 +143,12 @@ const Arena = ({
     if (end[0] < 0 || end[1] < 0) return []
     if (end[0] > grid.width || end[1] > grid.height) return []
     
-    console.log(start, end, grid)
+    //console.log(start, end, grid)
 
-    if (!grid.nodes[start[1]][start[0]]) return []
-    if (!grid.nodes[end[1]][end[0]]) return []
+    if (grid.width <= start[0]) return []
+    if (grid.width <= end[0]) return []
+    if (grid.height <= start[1]) return []
+    if (grid.height <= end[1]) return []
     
     gridClone.setWalkableAt(start[0], start[1], true)
     const path = finder.findPath(start[0], start[1], end[0], end[1], gridClone)
@@ -253,7 +256,9 @@ const Arena = ({
       // hit enemy
       hitEnemy = true
 
-      enemy.health -= shotPower * 20
+      const baseDamage = difficulty == 0 ? 60 : 20
+
+      enemy.health -= shotPower * baseDamage
       enemy.actionFlag = "Take Damage"
 
       // is enemy dead
