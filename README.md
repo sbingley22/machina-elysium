@@ -7,6 +7,7 @@ Game is made using react three fiber. Assets are made by me in blender, AI gener
 Live Link:
 https://sbingley22.github.io/machina-elysium/
 
+![screenshot](./screenshot.png)
 
 ------------------------------------
 
